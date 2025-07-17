@@ -271,8 +271,11 @@ namespace CSM.Runtime.MonoBehaviours {
 
         // Only draw transformed pyramid to avoid activating fragments outside spotlight cone.
         lighting_buffer.SetGlobalFloat(nameID : _m_light_as_quad_prop_id, 0);
+
+        Matrix4x4 localToWorldTransform = Matrix4x4.TRS(a_light.CachedTransform.position, a_light.CachedTransform.rotation, Vector3.one);
+
         lighting_buffer.DrawMesh(mesh : this._spot_light_mesh,
-                                 matrix : a_light.CachedTransform.localToWorldMatrix
+                                 matrix : localToWorldTransform
                                           * Matrix4x4.Scale(vector : new Vector3(x : spot_width,
                                                                                  y : spot_width,
                                                                                  z : a_light
@@ -390,10 +393,12 @@ namespace CSM.Runtime.MonoBehaviours {
 
         var pass = intersects_near ? _near_pass_idx : _non_near_pass_idx;
 
+        Matrix4x4 localToWorldTransform = Matrix4x4.TRS(a_light.CachedTransform.position, a_light.CachedTransform.rotation, Vector3.one);
+
         // Only draw transformed sphere to avoid activating fragments outside point light sphere.
         lighting_buffer.SetGlobalFloat(nameID : _m_light_as_quad_prop_id, 0);
         lighting_buffer.DrawMesh(mesh : this._point_light_mesh,
-                                 matrix : a_light.CachedTransform.localToWorldMatrix
+                                 matrix : localToWorldTransform
                                           * Matrix4x4.Scale(vector : new Vector3(x : 2.0f * light_range,
                                                                                  y : 2.0f * light_range,
                                                                                  z : 2.0f * light_range)),
